@@ -227,9 +227,9 @@
 - Test: `backend/tests/test_e2e.py`
 - Modify: `README.md` (hướng dẫn chạy 1 lệnh cả Frontend + Backend)
 
-- [ ] **Step 1: Chạy toàn bộ test suite backend (`pytest`)**
-- [ ] **Step 2: Chạy build frontend (`npm run build`)**
-- [ ] **Step 3: Kiểm tra luồng tạo trang thực tế từ một prompt mẫu**
-- [ ] **Step 4: Kiểm tra tính năng Click-to-Inspect và Undo/Redo**
-- [ ] **Step 5: Kiểm tra tính năng Export HTML và mở thử file ngoài trình duyệt độc lập**
-- [ ] **Step 6: Tạo `README.md` chi tiết và commit hoàn thiện `git commit -m "docs: add setup guide and complete e2e verification"`**
+- [x] **Step 1: Chạy toàn bộ test suite backend (`pytest`)**
+- [x] **Step 2: Chạy build frontend (`npm run build`)**
+- [x] **Step 3: Kiểm tra luồng tạo trang thực tế từ một prompt mẫu**
+- [x] **Step 4: Kiểm tra tính năng Click-to-Inspect và Undo/Redo**
+- [x] **Step 5: Kiểm tra tính năng Export HTML và mở thử file ngoài trình duyệt độc lập**
+- [x] **Step 6: Tạo `README.md` chi tiết và commit hoàn thiện `git commit -m "docs: add setup guide and complete e2e verification"`**
