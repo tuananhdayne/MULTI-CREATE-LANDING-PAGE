@@ -174,11 +174,11 @@
 **Interfaces:**
 - Produces: Single-page React application kết nối với backend qua Axios và EventSource listener.
 
-- [ ] **Step 1: Khởi tạo dự án Vite React TypeScript trong thư mục `frontend/`**
-- [ ] **Step 2: Cấu hình Tailwind CSS, Google Fonts và Lucide Icons**
-- [ ] **Step 3: Viết `src/services/api.ts` kết nối REST API và lắng nghe SSE events**
-- [ ] **Step 4: Kiểm tra build frontend thành công**
-- [ ] **Step 5: Commit `git commit -m "feat(frontend): scaffold vite react app and api integration"`**
+- [x] **Step 1: Khởi tạo dự án Vite React TypeScript trong thư mục `frontend/`**
+- [x] **Step 2: Cấu hình Tailwind CSS, Google Fonts và Lucide Icons**
+- [x] **Step 3: Viết `src/services/api.ts` kết nối REST API và lắng nghe SSE events**
+- [x] **Step 4: Kiểm tra build frontend thành công**
+- [x] **Step 5: Commit `git commit -m "feat(frontend): scaffold vite react app and api integration"`**
 
 ---
 
