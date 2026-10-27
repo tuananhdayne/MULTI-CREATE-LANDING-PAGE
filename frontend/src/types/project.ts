@@ -47,9 +47,23 @@ export interface DesignProposal {
   revision_notes?: string;
 }
 
+export interface DevToolsAudit {
+  passed?: boolean;
+  console_errors?: string[];
+  console_errors_count?: number;
+  has_overflow?: boolean;
+  runtime_tested?: boolean;
+  warning?: string;
+}
+
 export interface BuildArtifact {
   html_code: string;
-  qa_report: Record<string, any>;
+  qa_report: {
+    qa_passed?: boolean;
+    qa_feedback?: string;
+    devtools_audit?: DevToolsAudit;
+    [key: string]: any;
+  };
   created_at: string;
 }
 
