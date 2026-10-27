@@ -1,0 +1,39 @@
+# Secrets and Environment (CRITICAL: Never commit secrets)
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+credentials*.json
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+ENV/
+build/
+dist/
+*.egg-info/
+
+# Pytest & Coverage
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Frontend (Node / Vite)
+frontend/node_modules/
+frontend/dist/
+frontend/dist-ssr/
+*.local
+
+# System & IDE
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
