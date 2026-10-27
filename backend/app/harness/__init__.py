@@ -5,6 +5,16 @@ from app.harness.models import (
     TestCase,
     BenchmarkSuiteResult,
 )
+from app.harness.rubrics import (
+    evaluate_ba_analyst,
+    evaluate_proposal,
+    evaluate_strategist,
+    evaluate_copywriter,
+    evaluate_designer,
+    evaluate_coder,
+    evaluate_visual_qa,
+    evaluate_element_editor,
+)
 
 __all__ = [
     "HarnessStatus",
@@ -12,4 +22,12 @@ __all__ = [
     "EvaluationResult",
     "TestCase",
     "BenchmarkSuiteResult",
+    "evaluate_ba_analyst",
+    "evaluate_proposal",
+    "evaluate_strategist",
+    "evaluate_copywriter",
+    "evaluate_designer",
+    "evaluate_coder",
+    "evaluate_visual_qa",
+    "evaluate_element_editor",
 ]

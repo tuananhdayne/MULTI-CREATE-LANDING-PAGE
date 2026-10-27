@@ -9,7 +9,7 @@ Pre-flight: no interface conflicts found.
 
 ## Task Progress
 Task 1: complete (models defined, tests: PYTHONPATH=backend pytest backend/tests/test_harness_models.py -v → 4 passed)
-Task 2: not started
+Task 2: complete (rubrics engine implemented, tests: PYTHONPATH=backend pytest backend/tests/test_harness_rubrics.py -v → 8 passed)
 Task 3: not started
 Task 4: not started
 Task 5: not started
