@@ -13,6 +13,7 @@ export interface AgentEvent {
   status: "started" | "thinking" | "completed" | "warning" | "error";
   message: string;
   summary?: string;
+  full_content?: string;
   passed?: boolean;
   errors?: string[];
 }

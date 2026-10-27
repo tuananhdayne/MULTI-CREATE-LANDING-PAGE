@@ -162,7 +162,8 @@ async def sse_agent_pipeline_generator(
             "agent": "strategist",
             "status": "completed",
             "message": "Đã hoàn thành cấu trúc dàn ý chiến lược.",
-            "summary": state.get("outline", "")[:350]
+            "summary": state.get("outline", "")[:200] + "...",
+            "full_content": state.get("outline", "")
         })
 
         # Step 2: Copywriter Agent
@@ -177,7 +178,8 @@ async def sse_agent_pipeline_generator(
             "agent": "copywriter",
             "status": "completed",
             "message": "Đã hoàn thành nội dung chuyển đổi cho từng mục.",
-            "summary": state.get("copy", "")[:350]
+            "summary": state.get("copy", "")[:200] + "...",
+            "full_content": state.get("copy", "")
         })
 
         # Step 3: UI Designer Agent
@@ -192,7 +194,8 @@ async def sse_agent_pipeline_generator(
             "agent": "designer",
             "status": "completed",
             "message": "Đã hoàn thành Design System và hiệu ứng giao diện.",
-            "summary": state.get("design", "")[:350]
+            "summary": state.get("design", "")[:200] + "...",
+            "full_content": state.get("design", "")
         })
 
         # Step 4: Coder & QA Loop
@@ -211,10 +214,13 @@ async def sse_agent_pipeline_generator(
             })
             coder_res = await asyncio.to_thread(coder_node, state)
             state.update(coder_res)
+            code_len = len(state.get("code", ""))
             yield format_sse("agent_progress", {
                 "agent": "coder",
                 "status": "completed",
-                "message": "Đã lập trình xong mã nguồn trang web."
+                "message": "Đã lập trình xong mã nguồn trang web.",
+                "summary": f"Đã sinh thành công {code_len} ký tự mã HTML5 & Tailwind.",
+                "full_content": f"Mã nguồn HTML5 đã tạo ({code_len} bytes) sẵn sàng nạp vào Live Preview."
             })
 
             # Visual QA
@@ -231,6 +237,8 @@ async def sse_agent_pipeline_generator(
                 "agent": "qa",
                 "status": "completed" if qa_passed else "warning",
                 "message": qa_res.get("qa_feedback", ""),
+                "summary": "Đạt chuẩn 100%" if qa_passed else "Phát hiện điểm cần sửa",
+                "full_content": qa_res.get("qa_feedback", ""),
                 "passed": qa_passed
             })
 
