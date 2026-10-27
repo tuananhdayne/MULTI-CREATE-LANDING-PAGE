@@ -10,6 +10,6 @@ Pre-flight: no interface conflicts found.
 ## Task Progress
 Task 1: complete (models defined, tests: PYTHONPATH=backend pytest backend/tests/test_harness_models.py -v → 4 passed)
 Task 2: complete (rubrics engine implemented, tests: PYTHONPATH=backend pytest backend/tests/test_harness_rubrics.py -v → 8 passed)
-Task 3: not started
-Task 4: not started
-Task 5: not started
+Task 3: complete (fixtures and benchmark dataset implemented, tests: PYTHONPATH=backend pytest backend/tests/test_harness_fixtures.py -v → 3 passed)
+Task 4: complete (runner & report generator implemented, tests: PYTHONPATH=backend pytest backend/tests/test_agent_harness.py -v → 3 passed)
+Task 5: complete (CLI & benchmark script verified with 40/40 evals passing, report saved to docs/benchmarks/benchmark_latest.md)

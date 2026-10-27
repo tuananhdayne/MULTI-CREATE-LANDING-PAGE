@@ -15,6 +15,8 @@ from app.harness.rubrics import (
     evaluate_visual_qa,
     evaluate_element_editor,
 )
+from app.harness.fixtures import BENCHMARK_CASES, MOCK_AGENT_OUTPUTS
+from app.harness.runner import AgentHarness, ALL_AGENTS
 
 __all__ = [
     "HarnessStatus",
@@ -30,4 +32,8 @@ __all__ = [
     "evaluate_coder",
     "evaluate_visual_qa",
     "evaluate_element_editor",
+    "BENCHMARK_CASES",
+    "MOCK_AGENT_OUTPUTS",
+    "AgentHarness",
+    "ALL_AGENTS",
 ]

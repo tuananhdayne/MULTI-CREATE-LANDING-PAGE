@@ -83,6 +83,53 @@ cd frontend && npm run build
 
 ---
 
+## ⚡ Năng Lực Chuyên Sâu Tích Hợp (Agent Superpowers)
+
+Hệ thống được nâng cấp toàn diện với 4 nguồn năng lực thiết kế & kiểm thử chuẩn quốc tế:
+
+1. **🎨 UI UX Pro Max (`Designer Agent`)**:
+   - Tự động thiết lập Design System chuẩn mực theo quy tắc phối màu **60-30-10** (60% canvas nền, 30% cấu trúc thẻ, 10% điểm nhấn CTA chuyển đổi).
+   - Thư viện 6 phong cách thị giác cao cấp: *Modern SaaS, Bento Grid, Dark Cyberpunk, Minimalist Editorial, Warm Creator, Neo-Brutalism*.
+   - Tuyển tập cặp font Google Fonts chất lượng cao (*Outfit + Inter, Space Grotesk + Plus Jakarta Sans, Syne + DM Sans*).
+   - Bảo đảm tiêu chuẩn tương phản khả dụng **WCAG AA** (tối thiểu 4.5:1).
+
+2. **✨ Frontend Design Skill (`Designer Agent + Coder Agent`)**:
+   - Triệt tiêu toàn diện các đặc điểm **"AI-slop" (rập khuôn máy móc)**: loại bỏ gradient tím-hồng generic, không tô màu lẻ loi một chữ trong tiêu đề, không lạm dụng nhãn ALL-CAPS vô tội vạ.
+   - Bố cục bất đối xứng có chủ đích (*Asymmetric Bento layout*) thay vì xếp card 3 cột nhàm chán.
+   - Chuyển động có tổ chức (*orchestrated motion*), tạo điểm nhấn xuất hiện mượt mà.
+
+3. **🛠️ Chrome DevTools MCP (`Visual QA + Element Editor Agent`)**:
+   - Giao tiếp trực tiếp với Headless Chrome qua giao thức MCP (`chrome-devtools-mcp`).
+   - Audit sâu runtime JavaScript: phát hiện và phân loại chính xác các lỗi `console.error`.
+   - Kiểm tra co dãn giao diện di động 375px và đo đạc thuộc tính DOM thực tế.
+
+4. **🎭 Playwright (`Visual QA Agent`)**:
+   - Tự động kiểm thử responsive trên cả **3 khung nhìn thực tế**: Desktop (1280x800), Tablet (768x1024), và Mobile (375x812).
+   - Kiểm thử tương tác (Interactive smoke test): Click thử các nút CTA chính và kiểm tra rendering của SVG icons.
+
+---
+
+## 📊 Agent Test & Benchmark Evaluation Harness
+
+Dự án cung cấp bộ công cụ kiểm thử và đo lường chất lượng Agent độc lập:
+
+### Chạy Benchmark Suite toàn diện (40 bài test trên 5 ngành nghề):
+```bash
+python3 scripts/run_agent_benchmark.py
+```
+*(Chế độ Mock Replay chạy siêu tốc trong < 1 giây, xuất báo cáo Markdown tại `docs/benchmarks/benchmark_latest.md`)*
+
+### Chạy Sandbox trực tiếp với Live LLM / Browser:
+```bash
+# Test riêng Visual QA với Playwright & DevTools MCP trên case B2B SaaS
+python3 scripts/run_agent_benchmark.py --agent visual_qa --case b2b_saas --live
+
+# Test riêng Element Editor chỉnh sửa phần tử DOM theo lệnh DevTools
+python3 scripts/run_agent_benchmark.py --agent element_editor --case b2b_saas --live
+```
+
+---
+
 ## 📁 Cấu Trúc Mã Nguồn
 
 ```
@@ -95,24 +142,24 @@ GEN_LANDING/
 │   ├── app/
 │   │   ├── config.py           # Quản lý cấu hình an toàn
 │   │   ├── main.py             # FastAPI entrypoint & SSE streaming
-│   │   ├── agents/             # 5 Agent chuyên sâu & Element Editor
+│   │   ├── agents/             # 8 Agent chuyên sâu (BA, Proposal, Coder, QA, v.v.)
 │   │   ├── graph/              # LangGraph StateGraph & Critic Loop
-│   │   ├── models/             # Pydantic schemas & AgentState
-│   │   └── services/           # Quản lý phiên bản Undo/Redo
-│   └── tests/                  # Bộ 22 test cases tự động
-└── frontend/
-    ├── index.html
-    ├── package.json
-    ├── tailwind.config.js
-    └── src/
-        ├── App.tsx             # Giao diện chính điều khiển Workspace
-        ├── components/
-        │   ├── Header.tsx      # Viewports, Undo/Redo, Export
-        │   ├── PromptInput.tsx # Ô nhập prompt & Templates gợi ý
-        │   ├── AgentTimeline.tsx # Hiển thị luồng 5 Agent thời gian thực
-        │   ├── LivePreview.tsx # Iframe preview & DevTools Inspector
-        │   ├── InspectModal.tsx # Popup sửa phần tử chọn trên giao diện
-        │   └── CodeModal.tsx   # Xem & copy mã HTML
-        └── services/
-            └── api.ts          # Kết nối REST & SSE với Backend
+│   │   ├── harness/            # Agent Test & Benchmark Evaluation Harness
+│   │   │   ├── models.py       # Pydantic schemas cho Test & Benchmark
+│   │   │   ├── rubrics.py      # Thang điểm 0-100 cho 8 agent
+│   │   │   ├── fixtures.py     # Benchmark dataset 5 ngành nghề
+│   │   │   ├── runner.py       # Sandboxed Agent Runner
+│   │   │   └── cli.py          # CLI runner
+│   │   ├── services/           # Design Intelligence, Chrome Inspector, Session Service
+│   │   └── schemas/            # Pydantic API & Session Schemas
+│   └── tests/                  # Bộ 60+ test cases tự động
+├── frontend/                   # React 18 + Vite + Tailwind CSS + Lucide
+├── scripts/
+│   ├── run_agent_benchmark.py  # Script chạy Benchmark Harness
+│   └── test_milestone_workflow.py # Script kiểm thử E2E 3-stage milestone
+└── docs/
+    ├── specs/                  # Tài liệu thiết kế kỹ thuật (Design Specs)
+    ├── plans/                  # Kế hoạch triển khai (Implementation Plans)
+    ├── progress/               # Nhật ký tiến độ chi tiết (Ledgers)
+    └── benchmarks/             # Báo cáo Benchmark định lượng
 ```
