@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { ProjectSession, PhaseStep, SessionStatus } from '../types/project';
+import type { ProjectSession, PhaseStep, SessionStatus } from '../types/project';
 
 const API_BASE = 'http://localhost:8000';
 

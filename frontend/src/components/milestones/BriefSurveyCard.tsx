@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { BriefQuestion } from '../../types/project';
+import type { BriefQuestion } from '../../types/project';
 import { HelpCircle, CheckCircle2, Sparkles, Zap, ArrowRight, MessageSquareText } from 'lucide-react';
 
 interface BriefSurveyCardProps {

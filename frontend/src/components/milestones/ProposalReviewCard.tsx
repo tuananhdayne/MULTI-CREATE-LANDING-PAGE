@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { DesignProposal } from '../../types/project';
+import type { DesignProposal } from '../../types/project';
 import { 
   Palette, 
   Type, 

@@ -5,14 +5,30 @@ import { AgentTimeline } from "./components/AgentTimeline";
 import { LivePreview } from "./components/LivePreview";
 import { InspectModal } from "./components/InspectModal";
 import { CodeModal } from "./components/CodeModal";
+import { BriefSurveyCard } from "./components/milestones/BriefSurveyCard";
+import { ProposalReviewCard } from "./components/milestones/ProposalReviewCard";
+import { UATPanel } from "./components/milestones/UATPanel";
+import { useProjectSession } from "./hooks/useProjectSession";
 import { api } from "./services/api";
-import type { ProjectData, AgentEvent, HealthStatus } from "./services/api";
+import type { HealthStatus } from "./services/api";
+import { Sparkles, Layers, ArrowLeft } from "lucide-react";
 
 export function App() {
-  const [projectId] = useState<string>("landing-session-1");
-  const [project, setProject] = useState<ProjectData | null>(null);
-  const [events, setEvents] = useState<AgentEvent[]>([]);
-  const [isGenerating, setIsGenerating] = useState<boolean>(false);
+  const {
+    session,
+    activePhase,
+    setActivePhase,
+    loading: sessionLoading,
+    statusMessage,
+    error: sessionError,
+    startBrief,
+    submitBrief,
+    reviseProposal,
+    approveProposalAndBuild,
+    submitUATFeedback,
+    resetProject,
+  } = useProjectSession();
+
   const [viewport, setViewport] = useState<"desktop" | "tablet" | "mobile">("desktop");
   const [inspectMode, setInspectMode] = useState<boolean>(false);
   const [selectedElement, setSelectedElement] = useState<any | null>(null);
@@ -21,79 +37,37 @@ export function App() {
   const [health, setHealth] = useState<HealthStatus | null>(null);
   const [errorToast, setErrorToast] = useState<string | null>(null);
 
-  // Load backend health and initial project on mount
+  // Check health on mount
   useEffect(() => {
     api.getHealth()
       .then((h) => setHealth(h))
       .catch((err) => console.warn("Backend not available yet:", err.message));
+  }, []);
 
-    api.getProject(projectId)
-      .then((p) => {
-        if (p && p.code) setProject(p);
-      })
-      .catch((err) => console.warn("No active project loaded:", err.message));
-  }, [projectId]);
+  useEffect(() => {
+    if (sessionError) {
+      setErrorToast(sessionError);
+    }
+  }, [sessionError]);
 
-  // Handle multi-agent generation via SSE
-  const handleGenerate = async (prompt: string, theme: string) => {
-    setIsGenerating(true);
-    setEvents([]);
-    setErrorToast(null);
-
-    await api.streamGenerate(
-      prompt,
-      theme,
-      projectId,
-      (event) => {
-        setEvents((prev) => [...prev, event]);
-      },
-      (completedProject) => {
-        setProject(completedProject);
-        setIsGenerating(false);
-      },
-      (errorMsg) => {
-        setErrorToast(errorMsg);
-        setIsGenerating(false);
-      }
-    );
+  // Initial prompt submit -> Starts Phase 1 (Briefing)
+  const handleInitialPrompt = async (prompt: string, _theme: string) => {
+    await startBrief(prompt, false);
   };
 
-  // Handle Undo
-  const handleUndo = async () => {
-    if (!project?.can_undo) return;
-    try {
-      const updated = await api.undo(projectId);
-      setProject(updated);
-    } catch (err: any) {
-      setErrorToast("Không thể hoàn tác: " + err.message);
+  // Auto-pilot express lane
+  const handleAutoPilot = async () => {
+    if (session) {
+      await startBrief(session.initial_prompt, true);
     }
   };
 
-  // Handle Redo
-  const handleRedo = async () => {
-    if (!project?.can_redo) return;
-    try {
-      const updated = await api.redo(projectId);
-      setProject(updated);
-    } catch (err: any) {
-      setErrorToast("Không thể làm lại: " + err.message);
-    }
-  };
-
-  // Handle targeted element modification (Click-to-Inspect)
+  // Targeted element edit in Phase 3
   const handleTweakElement = async (instruction: string) => {
-    if (!selectedElement || !project) return;
+    if (!selectedElement) return;
     setIsTweaking(true);
     try {
-      const updated = await api.tweakElement(projectId, {
-        element_id: selectedElement.element_id,
-        tag: selectedElement.tag,
-        classes: selectedElement.classes,
-        current_html: selectedElement.current_html,
-        instruction,
-        full_code: project.code,
-      });
-      setProject(updated);
+      await submitUATFeedback(instruction, selectedElement.element_id);
       setSelectedElement(null);
       setInspectMode(false);
     } catch (err: any) {
@@ -103,10 +77,11 @@ export function App() {
     }
   };
 
-  // Download index.html
+  // Download final HTML
   const handleDownload = () => {
-    if (!project?.code) return;
-    const blob = new Blob([project.code], { type: "text/html;charset=utf-8" });
+    const code = session?.build?.html_code;
+    if (!code) return;
+    const blob = new Blob([code], { type: "text/html;charset=utf-8" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
@@ -117,43 +92,124 @@ export function App() {
     URL.revokeObjectURL(url);
   };
 
+  const currentHtml = session?.build?.html_code || "";
+
   return (
     <div className="flex flex-col h-screen w-screen bg-slate-950 text-slate-100 overflow-hidden font-sans">
-      {/* Top Header */}
+      {/* Top Header with 3-Phase Stepper */}
       <Header
         viewport={viewport}
         setViewport={setViewport}
         inspectMode={inspectMode}
         setInspectMode={setInspectMode}
-        canUndo={Boolean(project?.can_undo)}
-        canRedo={Boolean(project?.can_redo)}
-        version={project?.version || 0}
-        onUndo={handleUndo}
-        onRedo={handleRedo}
+        canUndo={false}
+        canRedo={false}
+        version={session?.uat_history.length || 1}
+        onUndo={() => {}}
+        onRedo={() => {}}
         onOpenCode={() => setIsCodeModalOpen(true)}
         onDownload={handleDownload}
-        modelName={health?.model || "ag/gemini-3.7-flash"}
-        hasCode={Boolean(project?.code)}
+        modelName={health?.model || "ag/gemini-3.8-flash"}
+        hasCode={Boolean(currentHtml)}
+        activePhase={activePhase}
+        setActivePhase={setActivePhase}
       />
 
-      {/* Main Workspace Layout */}
-      <div className="flex-1 flex flex-col md:flex-row overflow-hidden relative">
-        {/* Left Control Panel: Prompt & Timeline */}
-        <aside className="w-full md:w-[420px] lg:w-[460px] p-4 flex flex-col gap-4 overflow-y-auto border-r border-slate-800/80 bg-slate-900/30 shrink-0">
-          <PromptInput onGenerate={handleGenerate} isGenerating={isGenerating} />
-          <AgentTimeline events={events} isGenerating={isGenerating} />
-        </aside>
+      {/* Main Container */}
+      <div className="flex-1 flex flex-col overflow-hidden relative">
+        {/* Loading overlay banner when agents are working */}
+        {sessionLoading && (
+          <div className="bg-indigo-600/90 text-white text-xs px-4 py-2.5 flex items-center justify-center gap-2.5 backdrop-blur-md shadow-lg z-40 animate-pulse">
+            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
+            <span className="font-semibold">{statusMessage || "Đội ngũ IT Agent đang xử lý..."}</span>
+          </div>
+        )}
 
-        {/* Right Preview Panel: Live Iframe with Responsive Frame */}
-        <main className="flex-1 h-full overflow-hidden flex flex-col bg-slate-950">
-          <LivePreview
-            code={project?.code || ""}
-            viewport={viewport}
-            inspectMode={inspectMode}
-            onSelectElement={(el) => setSelectedElement(el)}
-            isGenerating={isGenerating}
-          />
-        </main>
+        {/* State 0: Initial Screen (No session yet) */}
+        {!session && (
+          <div className="flex-1 flex flex-col items-center justify-center p-6 max-w-2xl mx-auto w-full text-center">
+            <div className="w-16 h-16 rounded-3xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-emerald-400 flex items-center justify-center shadow-2xl shadow-indigo-500/30 mb-6">
+              <Sparkles className="w-8 h-8 text-white" />
+            </div>
+            <h2 className="text-3xl font-extrabold text-white tracking-tight mb-2">
+              Phòng Ban IT AI Phát Triển Landing Page
+            </h2>
+            <p className="text-sm text-slate-400 max-w-md mb-8">
+              Cộng tác thông minh qua 3 chặng: Khảo sát Brief chuẩn BA, Duyệt đề xuất thiết kế & Wireframe, rồi mới chuyển giao lập trình nghiệm thu UAT.
+            </p>
+            <div className="w-full text-left">
+              <PromptInput onGenerate={handleInitialPrompt} isGenerating={sessionLoading} />
+            </div>
+          </div>
+        )}
+
+        {/* State 1: Phase 1 - Brief Questionnaire */}
+        {session && activePhase === 1 && (
+          <div className="flex-1 overflow-y-auto p-4">
+            <div className="max-w-4xl mx-auto flex items-center justify-between mb-4">
+              <button
+                onClick={resetProject}
+                className="text-xs text-slate-400 hover:text-white flex items-center gap-1.5 transition-colors"
+              >
+                <ArrowLeft className="w-3.5 h-3.5" />
+                <span>Bắt đầu dự án mới</span>
+              </button>
+            </div>
+            <BriefSurveyCard
+              prompt={session.initial_prompt}
+              questions={session.brief.questions || []}
+              loading={sessionLoading}
+              onSubmit={submitBrief}
+              onAutoPilot={handleAutoPilot}
+            />
+          </div>
+        )}
+
+        {/* State 2: Phase 2 - Proposal Review Card */}
+        {session && activePhase === 2 && session.proposal && (
+          <div className="flex-1 overflow-y-auto p-4">
+            <div className="max-w-4xl mx-auto flex items-center justify-between mb-4">
+              <button
+                onClick={() => setActivePhase(1)}
+                className="text-xs text-slate-400 hover:text-white flex items-center gap-1.5 transition-colors"
+              >
+                <ArrowLeft className="w-3.5 h-3.5" />
+                <span>Xem lại câu trả lời Brief</span>
+              </button>
+            </div>
+            <ProposalReviewCard
+              proposal={session.proposal}
+              loading={sessionLoading}
+              onApprove={approveProposalAndBuild}
+              onRevise={reviseProposal}
+            />
+          </div>
+        )}
+
+        {/* State 3: Phase 3 - Live Preview & UAT Acceptance */}
+        {session && activePhase === 3 && (
+          <div className="flex-1 flex flex-col h-full overflow-hidden bg-slate-950">
+            <div className="flex-1 overflow-hidden">
+              <LivePreview
+                code={currentHtml}
+                viewport={viewport}
+                inspectMode={inspectMode}
+                onSelectElement={(el) => setSelectedElement(el)}
+                isGenerating={sessionLoading}
+              />
+            </div>
+            <UATPanel
+              build={session.build}
+              uatHistory={session.uat_history || []}
+              loading={sessionLoading}
+              onSendFeedback={(fb) => submitUATFeedback(fb)}
+              onDownload={handleDownload}
+              onAcceptFinal={handleDownload}
+              inspectMode={inspectMode}
+              setInspectMode={setInspectMode}
+            />
+          </div>
+        )}
       </div>
 
       {/* Targeted Element Edit Modal */}
@@ -169,7 +225,7 @@ export function App() {
       <CodeModal
         isOpen={isCodeModalOpen}
         onClose={() => setIsCodeModalOpen(false)}
-        code={project?.code || ""}
+        code={currentHtml}
       />
 
       {/* Error Toast Notification */}
