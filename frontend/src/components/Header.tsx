@@ -26,6 +26,8 @@ interface HeaderProps {
   onDownload: () => void;
   modelName: string;
   hasCode: boolean;
+  activePhase?: 1 | 2 | 3;
+  setActivePhase?: (phase: 1 | 2 | 3) => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -42,6 +44,8 @@ export const Header: React.FC<HeaderProps> = ({
   onDownload,
   modelName,
   hasCode,
+  activePhase = 1,
+  setActivePhase,
 }) => {
   return (
     <header className="h-16 border-b border-slate-800 bg-slate-900/80 backdrop-blur-md px-4 flex items-center justify-between z-30 sticky top-0">
@@ -53,13 +57,13 @@ export const Header: React.FC<HeaderProps> = ({
         <div>
           <div className="flex items-center gap-2">
             <h1 className="font-bold text-base tracking-tight text-white flex items-center gap-1.5">
-              LandingCraft <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">Multi-Agent</span>
+              LandingCraft <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">IT Team</span>
             </h1>
           </div>
           <p className="text-xs text-slate-400 flex items-center gap-1">
             <Zap className="w-3 h-3 text-amber-400 inline" />
-            <span className="truncate max-w-[160px] font-mono text-[11px] text-slate-300" title={modelName}>
-              {modelName || "ag/gemini-3.7-flash"}
+            <span className="truncate max-w-[140px] font-mono text-[11px] text-slate-300" title={modelName}>
+              {modelName || "ag/gemini-3.8-flash"}
             </span>
             {version > 0 && (
               <span className="text-[10px] px-1.5 py-0.2 rounded bg-slate-800 text-slate-300 border border-slate-700">
@@ -68,6 +72,53 @@ export const Header: React.FC<HeaderProps> = ({
             )}
           </p>
         </div>
+      </div>
+
+      {/* Middle: 3-Stage Milestone Stepper */}
+      <div className="hidden lg:flex items-center gap-2 bg-slate-950/70 p-1.5 rounded-2xl border border-slate-800">
+        <button
+          onClick={() => setActivePhase && setActivePhase(1)}
+          className={`flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-medium transition-all ${
+            activePhase === 1
+              ? "bg-indigo-600 text-white shadow-md shadow-indigo-600/30"
+              : activePhase > 1
+              ? "text-emerald-400 hover:bg-slate-800/60"
+              : "text-slate-500"
+          }`}
+        >
+          <span className="w-4 h-4 rounded-full bg-black/20 flex items-center justify-center text-[10px] font-bold">1</span>
+          <span>1. Khảo sát Brief</span>
+        </button>
+
+        <span className="text-slate-600 text-xs">→</span>
+
+        <button
+          onClick={() => setActivePhase && setActivePhase(2)}
+          className={`flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-medium transition-all ${
+            activePhase === 2
+              ? "bg-indigo-600 text-white shadow-md shadow-indigo-600/30"
+              : activePhase > 2
+              ? "text-emerald-400 hover:bg-slate-800/60"
+              : "text-slate-500"
+          }`}
+        >
+          <span className="w-4 h-4 rounded-full bg-black/20 flex items-center justify-center text-[10px] font-bold">2</span>
+          <span>2. Duyệt Concept</span>
+        </button>
+
+        <span className="text-slate-600 text-xs">→</span>
+
+        <button
+          onClick={() => setActivePhase && setActivePhase(3)}
+          className={`flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-medium transition-all ${
+            activePhase === 3
+              ? "bg-indigo-600 text-white shadow-md shadow-indigo-600/30"
+              : "text-slate-500 hover:bg-slate-800/60"
+          }`}
+        >
+          <span className="w-4 h-4 rounded-full bg-black/20 flex items-center justify-center text-[10px] font-bold">3</span>
+          <span>3. Live Preview & UAT</span>
+        </button>
       </div>
 
       {/* Middle: Viewport switchers & DevTools inspect mode */}
