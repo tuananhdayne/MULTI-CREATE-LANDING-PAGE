@@ -134,11 +134,11 @@
 - Produces: `compiled_graph` chạy StateGraph với router vòng lặp Critic: `coder -> qa -> (cần sửa ? coder : END)`.
 - Produces: `ProjectService` quản lý stack undo/redo các phiên bản HTML.
 
-- [ ] **Step 1: Viết test cho workflow loop và cơ chế undo/redo**
-- [ ] **Step 2: Xây dựng LangGraph StateGraph kết nối các agent với điều kiện lặp tối đa 2 lần nếu QA báo lỗi**
-- [ ] **Step 3: Cài đặt `project_service.py` lưu trữ phiên bản trang web**
-- [ ] **Step 4: Chạy test xác minh luồng graph hoàn chỉnh**
-- [ ] **Step 5: Commit `git commit -m "feat(backend): build langgraph stategraph workflow and version service"`**
+- [x] **Step 1: Viết test cho workflow loop và cơ chế undo/redo**
+- [x] **Step 2: Xây dựng LangGraph StateGraph kết nối các agent với điều kiện lặp tối đa 2 lần nếu QA báo lỗi**
+- [x] **Step 3: Cài đặt `project_service.py` lưu trữ phiên bản trang web**
+- [x] **Step 4: Chạy test xác minh luồng graph hoàn chỉnh**
+- [x] **Step 5: Commit `git commit -m "feat(backend): build langgraph stategraph workflow and version service"`**
 
 ---
 
