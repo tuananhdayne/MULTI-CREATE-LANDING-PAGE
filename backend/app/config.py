@@ -14,8 +14,8 @@ class Settings(BaseSettings):
         description="Google Gemini API Key for driving the multi-agent system"
     )
     gemini_model: str = Field(
-        default="ag/gemini-3.7-flash-high",
-        description="Gemini Model version (e.g., ag/gemini-3.7-flash-high, gemini-3.7-flash)"
+        default="ag/gemini-3.8-flash-high",
+        description="Gemini Model version (e.g., ag/gemini-3.8-flash-high)"
     )
     llm_base_url: Optional[str] = Field(
         default="http://localhost:20128/v1",

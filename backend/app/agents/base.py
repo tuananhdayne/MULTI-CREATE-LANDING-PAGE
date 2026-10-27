@@ -53,7 +53,7 @@ def get_gemini_llm(
     Strictly safeguards API keys from exposure.
     """
     settings = get_settings()
-    selected_model = model_name or settings.gemini_model or "ag/gemini-3.7-flash-high"
+    selected_model = model_name or settings.gemini_model or "ag/gemini-3.8-flash-high"
     api_key = settings.gemini_api_key or "DUMMY_KEY_FOR_TESTING"
 
     if settings.llm_base_url:
