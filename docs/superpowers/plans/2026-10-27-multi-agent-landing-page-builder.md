@@ -114,12 +114,12 @@
 - Consumes: `AgentState` từ `state.py`, Gemini wrapper từ `base.py`
 - Produces: Các hàm node: `strategist_node`, `copywriter_node`, `designer_node`, `coder_node`, `qa_node`, `tweak_element_node`.
 
-- [ ] **Step 1: Viết test cho logic của từng agent node**
-- [ ] **Step 2: Cài đặt `strategist.py` và `copywriter.py` (prompts tối ưu tỷ lệ chuyển đổi)**
-- [ ] **Step 3: Cài đặt `designer.py` và `coder.py` (single-file HTML5 + Tailwind CDN, Google Fonts, Lucide)**
-- [ ] **Step 4: Cài đặt `visual_qa.py` (kiểm tra cú pháp HTML, layout, tags) và `element_editor.py` (tinh chỉnh phần tử mục tiêu)**
-- [ ] **Step 5: Chạy unit tests xác minh output chuẩn của các node**
-- [ ] **Step 6: Commit `git commit -m "feat(backend): implement 5 specialized agents and element editor"`**
+- [x] **Step 1: Viết test cho logic của từng agent node**
+- [x] **Step 2: Cài đặt `strategist.py` và `copywriter.py` (prompts tối ưu tỷ lệ chuyển đổi)**
+- [x] **Step 3: Cài đặt `designer.py` và `coder.py` (single-file HTML5 + Tailwind CDN, Google Fonts, Lucide)**
+- [x] **Step 4: Cài đặt `visual_qa.py` (kiểm tra cú pháp HTML, layout, tags) và `element_editor.py` (tinh chỉnh phần tử mục tiêu)**
+- [x] **Step 5: Chạy unit tests xác minh output chuẩn của các node**
+- [x] **Step 6: Commit `git commit -m "feat(backend): implement 5 specialized agents and element editor"`**
 
 ---
 
