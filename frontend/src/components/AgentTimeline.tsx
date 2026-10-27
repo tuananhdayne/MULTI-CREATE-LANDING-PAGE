@@ -9,7 +9,7 @@ import {
   AlertTriangle,
   Loader2
 } from "lucide-react";
-import { AgentEvent } from "../services/api";
+import type { AgentEvent } from "../services/api";
 
 interface AgentTimelineProps {
   events: AgentEvent[];
