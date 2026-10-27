@@ -22,6 +22,7 @@ from app.agents.visual_qa import qa_node
 from app.agents.element_editor import tweak_element_node
 from app.graph.workflow import should_continue_qa
 from app.services.project_service import get_project_service
+from app.routers.project import router as project_router
 
 app = FastAPI(
     title="Multi-Agent Landing Page Builder API",
@@ -37,6 +38,8 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+app.include_router(project_router)
 
 
 @app.get("/api/health")

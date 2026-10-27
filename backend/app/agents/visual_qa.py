@@ -82,3 +82,5 @@ def qa_node(state: AgentState) -> Dict[str, Any]:
             "iteration": iteration,
             "messages": current_messages
         }
+
+visual_qa_node = qa_node
