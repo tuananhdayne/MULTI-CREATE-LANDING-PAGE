@@ -63,7 +63,8 @@ def get_gemini_llm(
             openai_api_key=api_key,
             openai_api_base=settings.llm_base_url,
             temperature=temperature,
-            timeout=120,
+            streaming=True,
+            timeout=180,
             max_retries=2,
         )
 

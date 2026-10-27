@@ -150,13 +150,27 @@ async def sse_agent_pipeline_generator(
         return f"event: {event_type}\ndata: {json.dumps(data, ensure_ascii=False)}\n\n"
 
     try:
+        async def run_node_with_heartbeat(func, current_state):
+            task = asyncio.create_task(asyncio.to_thread(func, current_state))
+            while not task.done():
+                try:
+                    res = await asyncio.wait_for(asyncio.shield(task), timeout=8.0)
+                    yield ("result", res)
+                    return
+                except asyncio.TimeoutError:
+                    yield ("heartbeat", ": keep-alive\n\n")
+
         # Step 1: Strategist Agent
         yield format_sse("agent_progress", {
             "agent": "strategist",
             "status": "started",
             "message": "Chiến lược gia (Strategist) đang phân tích yêu cầu và lên dàn ý chuyển đổi..."
         })
-        strategist_res = await asyncio.to_thread(strategist_node, state)
+        async for kind, val in run_node_with_heartbeat(strategist_node, state):
+            if kind == "heartbeat":
+                yield val
+            else:
+                strategist_res = val
         state.update(strategist_res)
         yield format_sse("agent_progress", {
             "agent": "strategist",
@@ -172,7 +186,11 @@ async def sse_agent_pipeline_generator(
             "status": "started",
             "message": "Copywriter đang soạn thảo tiêu đề, lời kêu gọi (CTAs) và nội dung bán hàng..."
         })
-        copywriter_res = await asyncio.to_thread(copywriter_node, state)
+        async for kind, val in run_node_with_heartbeat(copywriter_node, state):
+            if kind == "heartbeat":
+                yield val
+            else:
+                copywriter_res = val
         state.update(copywriter_res)
         yield format_sse("agent_progress", {
             "agent": "copywriter",
@@ -188,7 +206,11 @@ async def sse_agent_pipeline_generator(
             "status": "started",
             "message": "UI/UX Designer đang thiết lập hệ màu Tailwind, Typography và hiệu ứng thị giác..."
         })
-        designer_res = await asyncio.to_thread(designer_node, state)
+        async for kind, val in run_node_with_heartbeat(designer_node, state):
+            if kind == "heartbeat":
+                yield val
+            else:
+                designer_res = val
         state.update(designer_res)
         yield format_sse("agent_progress", {
             "agent": "designer",
@@ -212,7 +234,11 @@ async def sse_agent_pipeline_generator(
                 "status": "started",
                 "message": coder_msg
             })
-            coder_res = await asyncio.to_thread(coder_node, state)
+            async for kind, val in run_node_with_heartbeat(coder_node, state):
+                if kind == "heartbeat":
+                    yield val
+                else:
+                    coder_res = val
             state.update(coder_res)
             code_len = len(state.get("code", ""))
             yield format_sse("agent_progress", {
@@ -229,7 +255,11 @@ async def sse_agent_pipeline_generator(
                 "status": "started",
                 "message": "Visual QA đang kiểm tra tính toàn vẹn cú pháp HTML và Tailwind CDN..."
             })
-            qa_res = await asyncio.to_thread(qa_node, state)
+            async for kind, val in run_node_with_heartbeat(qa_node, state):
+                if kind == "heartbeat":
+                    yield val
+                else:
+                    qa_res = val
             state.update(qa_res)
             qa_passed = qa_res.get("qa_passed", False)
 
