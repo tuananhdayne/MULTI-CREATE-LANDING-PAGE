@@ -121,7 +121,7 @@ def qa_node(state: AgentState) -> Dict[str, Any]:
         }
 
     # All checks passed
-    feedback = "Kiểm tra chất lượng thành công: Cấu trúc HTML5 chuẩn, Tailwind CSS CDN đầy đủ, Chrome DevTools 0 lỗi console & giao diện di động hoàn hảo."
+    feedback = "Kiểm tra chất lượng thành công: Cấu trúc HTML5 chuẩn, Tailwind CSS CDN đầy đủ, Playwright Responsive (Desktop/Tablet/Mobile) hoàn hảo, Chrome DevTools 0 lỗi console & tương tác CTA mượt mà."
     current_messages.append({
         "agent": "qa",
         "status": "completed",
