@@ -155,11 +155,11 @@
   - `GET /api/project` (lấy code và trạng thái hiện tại)
   - `GET /api/health`
 
-- [ ] **Step 1: Viết integration test cho API endpoints**
-- [ ] **Step 2: Triển khai FastAPI app với CORS middleware và SSE stream handler**
-- [ ] **Step 3: Triển khai endpoint `/api/tweak-element` và endpoint quản lý phiên bản**
-- [ ] **Step 4: Chạy test toàn bộ API backend**
-- [ ] **Step 5: Commit `git commit -m "feat(backend): implement fastapi server with sse streaming and rest endpoints"`**
+- [x] **Step 1: Viết integration test cho API endpoints**
+- [x] **Step 2: Triển khai FastAPI app với CORS middleware và SSE stream handler**
+- [x] **Step 3: Triển khai endpoint `/api/tweak-element` và endpoint quản lý phiên bản**
+- [x] **Step 4: Chạy test toàn bộ API backend**
+- [x] **Step 5: Commit `git commit -m "feat(backend): implement fastapi server with sse streaming and rest endpoints"`**
 
 ---
 
