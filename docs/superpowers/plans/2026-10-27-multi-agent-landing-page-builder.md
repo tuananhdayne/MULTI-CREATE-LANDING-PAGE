@@ -92,11 +92,11 @@
 - Produces: `AgentState` TypedDict trong `state.py` (chứa `prompt`, `outline`, `copy`, `design`, `code`, `errors`, `messages`, `iteration`).
 - Produces: `get_gemini_model(model_name: Optional[str])` trả về instance ChatGoogleGenerativeAI hoặc Gemini Client an toàn.
 
-- [ ] **Step 1: Viết test khởi tạo Gemini Client và kiểm tra không leak key**
-- [ ] **Step 2: Tạo `AgentState` và Pydantic API Schemas (`GenerateRequest`, `TweakElementRequest`, `ProjectResponse`)**
-- [ ] **Step 3: Cài đặt `base.py` với xử lý retry và trích xuất code markdown sạch**
-- [ ] **Step 4: Chạy test xác minh base client**
-- [ ] **Step 5: Commit `git commit -m "feat(backend): add state schemas and base gemini client"`**
+- [x] **Step 1: Viết test khởi tạo Gemini Client và kiểm tra không leak key**
+- [x] **Step 2: Tạo `AgentState` và Pydantic API Schemas (`GenerateRequest`, `TweakElementRequest`, `ProjectResponse`)**
+- [x] **Step 3: Cài đặt `base.py` với xử lý retry và trích xuất code markdown sạch**
+- [x] **Step 4: Chạy test xác minh base client**
+- [x] **Step 5: Commit `git commit -m "feat(backend): add state schemas and base gemini client"`**
 
 ---
 
