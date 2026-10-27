@@ -214,11 +214,11 @@
   - `LivePreview`: Render HTML an toàn trong iframe, tự động chèn script lắng nghe sự kiện click/hover khi bật chế độ "Inspect", gửi thông tin phần tử (tag, class, text, outerHTML) ra ngoài qua `postMessage`.
   - `InspectModal`: Bật popup cho phép người dùng nhập yêu cầu chỉnh sửa riêng cho phần tử đó, gửi về `/api/tweak-element` và cập nhật iframe ngay lập tức.
 
-- [ ] **Step 1: Cài đặt `LivePreview.tsx` với responsive frame (Desktop 100%, Tablet 768px, Mobile 375px)**
-- [ ] **Step 2: Cài đặt script inject DevTools Inspector vào iframe (highlight box + selector pill)**
-- [ ] **Step 3: Cài đặt `InspectModal.tsx` nhận diện phần tử được click và gửi lệnh tinh chỉnh**
-- [ ] **Step 4: Lắp ráp toàn bộ vào `App.tsx` với state đồng bộ mượt mà**
-- [ ] **Step 5: Commit `git commit -m "feat(frontend): implement live preview with click-to-inspect devtools feature"`**
+- [x] **Step 1: Cài đặt `LivePreview.tsx` với responsive frame (Desktop 100%, Tablet 768px, Mobile 375px)**
+- [x] **Step 2: Cài đặt script inject DevTools Inspector vào iframe (highlight box + selector pill)**
+- [x] **Step 3: Cài đặt `InspectModal.tsx` nhận diện phần tử được click và gửi lệnh tinh chỉnh**
+- [x] **Step 4: Lắp ráp toàn bộ vào `App.tsx` với state đồng bộ mượt mà**
+- [x] **Step 5: Commit `git commit -m "feat(frontend): implement live preview with click-to-inspect devtools feature"`**
 
 ---
 
