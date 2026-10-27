@@ -73,11 +73,11 @@
 **Interfaces:**
 - Produces: `Settings` class trong `backend/app/config.py` với các thuộc tính `gemini_api_key: str`, `gemini_model: str = "gemini-2.5-flash"`, `host: str = "0.0.0.0"`, `port: int = 8000`.
 
-- [ ] **Step 1: Tạo .gitignore và .env.example đảm bảo bảo mật 100% key**
-- [ ] **Step 2: Viết test cho Config trong `backend/tests/test_config.py`**
-- [ ] **Step 3: Tạo `backend/requirements.txt` và triển khai `backend/app/config.py`**
-- [ ] **Step 4: Chạy test xác minh Config nạp đúng biến và giấu an toàn key**
-- [ ] **Step 5: Commit `git commit -m "chore: setup project structure and secure env config"`**
+- [x] **Step 1: Tạo .gitignore và .env.example đảm bảo bảo mật 100% key**
+- [x] **Step 2: Viết test cho Config trong `backend/tests/test_config.py`**
+- [x] **Step 3: Tạo `backend/requirements.txt` và triển khai `backend/app/config.py`**
+- [x] **Step 4: Chạy test xác minh Config nạp đúng biến và giấu an toàn key**
+- [x] **Step 5: Commit `git commit -m "chore: setup project structure and secure env config"`**
 
 ---
 
