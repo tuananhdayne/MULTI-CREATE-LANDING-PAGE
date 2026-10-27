@@ -195,11 +195,11 @@
   - `PromptInput`: Ô nhập yêu cầu có đính kèm danh sách thẻ template (SaaS, Khóa học, Agency, E-commerce, Event...).
   - `AgentTimeline`: Thanh tiến độ hiển thị trực quan 5 Agent (đang suy nghĩ, hoàn thành, chi tiết nội dung).
 
-- [ ] **Step 1: Cài đặt `Header.tsx` với đầy đủ nút thao tác nhanh**
-- [ ] **Step 2: Cài đặt `PromptInput.tsx` với giao diện hiện đại và các prompt mẫu**
-- [ ] **Step 3: Cài đặt `AgentTimeline.tsx` với animation mượt mà khi agent đang làm việc**
-- [ ] **Step 4: Cài đặt `CodeModal.tsx` để xem và copy code 1-click**
-- [ ] **Step 5: Commit `git commit -m "feat(frontend): implement header, prompt bar, and agent timeline components"`**
+- [x] **Step 1: Cài đặt `Header.tsx` với đầy đủ nút thao tác nhanh**
+- [x] **Step 2: Cài đặt `PromptInput.tsx` với giao diện hiện đại và các prompt mẫu**
+- [x] **Step 3: Cài đặt `AgentTimeline.tsx` với animation mượt mà khi agent đang làm việc**
+- [x] **Step 4: Cài đặt `CodeModal.tsx` để xem và copy code 1-click**
+- [x] **Step 5: Commit `git commit -m "feat(frontend): implement header, prompt bar, and agent timeline components"`**
 
 ---
 
