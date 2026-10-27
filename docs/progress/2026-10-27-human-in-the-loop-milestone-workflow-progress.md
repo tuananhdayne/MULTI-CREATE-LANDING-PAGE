@@ -13,3 +13,8 @@ Task 1: complete (commits 4e88c41..f88e358, tests: PYTHONPATH=backend pytest bac
 Task 2: complete (commits f88e358..fbe101d, tests: PYTHONPATH=backend pytest backend/tests/test_ba_agent.py -v → 1 passed)
 Task 3: complete (commits fbe101d..b93507d, tests: PYTHONPATH=backend pytest backend/tests/test_proposal_agent.py -v → 1 passed)
 Task 4: complete (commits b93507d..4eeeb77, tests: PYTHONPATH=backend pytest backend/tests/test_project_api.py -v → 1 passed)
+Task 5: complete (commits 4eeeb77..c56ceb0, tests: cd frontend && npm run build → 0 errors, build passed)
+Task 6: complete (commits c56ceb0..80b4958, tests: cd frontend && npm run build → 0 errors, build passed)
+Task 7: complete (commits 80b4958..7f9810a, tests: cd frontend && npm run build → 0 errors, build passed)
+Task 8: complete (commits 7f9810a..d0f67b7, tests: cd frontend && npm run build → 0 errors, build passed)
+Task 9: complete (commits d0f67b7..HEAD, tests: python3 scripts/test_milestone_workflow.py → all 3 phases passed, HTML verified & screenshot captured)

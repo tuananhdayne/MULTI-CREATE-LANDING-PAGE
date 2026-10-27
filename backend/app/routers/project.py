@@ -118,58 +118,60 @@ async def build_code(req: BuildCodeRequest):
         raise HTTPException(status_code=404, detail="Session not found")
 
     async def event_generator():
-        yield f"data: {json.dumps({'type': 'step_start', 'step': 'coder', 'message': 'Coder đang tiến hành lập trình Landing Page theo Proposal...'}, ensure_ascii=False)}\n\n"
-
-        # Prepare state for Coder
         proposal = session.proposal
         if not proposal:
             yield f"data: {json.dumps({'type': 'error', 'message': 'Không tìm thấy proposal đã duyệt'}, ensure_ascii=False)}\n\n"
             return
 
-        mock_state = {
-            "user_prompt": session.initial_prompt,
-            "strategy": {
-                "target_audience": proposal.target_audience,
-                "value_proposition": proposal.value_proposition,
-                "sections": proposal.sections_outline
-            },
-            "copy": {
-                "headline": proposal.value_proposition,
-                "sections": proposal.sections_outline
-            },
-            "design": {
-                "color_palette": proposal.color_palette,
+        async def run_node_with_heartbeat(func, current_state):
+            task = asyncio.create_task(asyncio.to_thread(func, current_state))
+            while not task.done():
+                try:
+                    res = await asyncio.wait_for(asyncio.shield(task), timeout=8.0)
+                    yield ("result", res)
+                    return
+                except asyncio.TimeoutError:
+                    yield ("heartbeat", ": keep-alive\n\n")
+
+        # Step 1: Coder
+        yield f"data: {json.dumps({'type': 'step_start', 'step': 'coder', 'message': 'Coder đang tiến hành lập trình Landing Page theo Proposal...'}, ensure_ascii=False)}\n\n"
+
+        coder_state = {
+            "prompt": session.initial_prompt,
+            "outline": json.dumps(proposal.sections_outline, ensure_ascii=False, indent=2),
+            "copy": f"Tiêu đề chính: {proposal.value_proposition}\nĐối tượng mục tiêu: {proposal.target_audience}\nTone giọng: {proposal.tone_of_voice}",
+            "design": json.dumps({
+                "palette": proposal.color_palette,
                 "typography": proposal.typography,
                 "tone": proposal.tone_of_voice
-            },
-            "html_code": "",
-            "qa_result": {},
-            "audit_trail": []
+            }, ensure_ascii=False, indent=2),
+            "qa_feedback": "",
+            "iteration": 0,
+            "messages": []
         }
 
-        # Run coder node with keep-alive
-        coder_task = asyncio.create_task(coder_node(mock_state))
-        while not coder_task.done():
-            yield ": keep-alive\n\n"
-            await asyncio.sleep(8)
+        coder_res = {}
+        async for kind, val in run_node_with_heartbeat(coder_node, coder_state):
+            if kind == "heartbeat":
+                yield val
+            else:
+                coder_res = val
 
-        coder_res = coder_task.result()
-        html_code = coder_res.get("html_code", "")
+        html_code = coder_res.get("code", "")
 
+        # Step 2: Visual QA
         yield f"data: {json.dumps({'type': 'step_start', 'step': 'visual_qa', 'message': 'Visual QA đang kiểm định tính hợp lệ của mã nguồn HTML5...'}, ensure_ascii=False)}\n\n"
 
-        # Run visual qa with keep-alive
-        qa_state = {**mock_state, "html_code": html_code}
-        qa_task = asyncio.create_task(visual_qa_node(qa_state))
-        while not qa_task.done():
-            yield ": keep-alive\n\n"
-            await asyncio.sleep(8)
-
-        qa_res = qa_task.result()
-        qa_report = qa_res.get("qa_result", {})
+        qa_state = {**coder_state, "code": html_code}
+        qa_res = {}
+        async for kind, val in run_node_with_heartbeat(visual_qa_node, qa_state):
+            if kind == "heartbeat":
+                yield val
+            else:
+                qa_res = val
 
         # Save to session
-        updated_session = session_service.set_code(req.session_id, html_code=html_code, qa_report=qa_report)
+        updated_session = session_service.set_code(req.session_id, html_code=html_code, qa_report=qa_res)
 
         yield f"data: {json.dumps({'type': 'complete', 'session': updated_session.model_dump()}, ensure_ascii=False)}\n\n"
 
@@ -189,7 +191,7 @@ async def uat_feedback(req: UATFeedbackRequest):
         current_html = session.build.html_code
         if req.target_element_id:
             # Targeted element edit
-            edit_task = asyncio.create_task(
+            task = asyncio.create_task(
                 asyncio.to_thread(
                     tweak_element_node,
                     full_code=current_html,
@@ -197,30 +199,31 @@ async def uat_feedback(req: UATFeedbackRequest):
                     instruction=req.feedback
                 )
             )
-            while not edit_task.done():
-                yield ": keep-alive\n\n"
-                await asyncio.sleep(5)
-            
-            new_html = edit_task.result()
+            while not task.done():
+                try:
+                    new_html = await asyncio.wait_for(asyncio.shield(task), timeout=5.0)
+                    break
+                except asyncio.TimeoutError:
+                    yield ": keep-alive\n\n"
         else:
             # Full page refinement via coder
-            refine_task = asyncio.create_task(
-                coder_node({
-                    "user_prompt": f"Yêu cầu sửa đổi UAT: {req.feedback}",
-                    "strategy": {"target_audience": session.proposal.target_audience if session.proposal else ""},
-                    "copy": {},
-                    "design": {"color_palette": session.proposal.color_palette if session.proposal else {}},
-                    "html_code": current_html,
-                    "qa_result": {},
-                    "audit_trail": []
-                })
-            )
-            while not refine_task.done():
-                yield ": keep-alive\n\n"
-                await asyncio.sleep(8)
-
-            refine_res = refine_task.result()
-            new_html = refine_res.get("html_code", current_html)
+            state = {
+                "prompt": session.initial_prompt,
+                "outline": "",
+                "copy": "",
+                "design": "",
+                "qa_feedback": f"Góp ý sửa đổi UAT từ đối tác: {req.feedback}",
+                "iteration": 1,
+                "messages": []
+            }
+            task = asyncio.create_task(asyncio.to_thread(coder_node, state))
+            while not task.done():
+                try:
+                    refine_res = await asyncio.wait_for(asyncio.shield(task), timeout=8.0)
+                    new_html = refine_res.get("code", current_html)
+                    break
+                except asyncio.TimeoutError:
+                    yield ": keep-alive\n\n"
 
         updated_session = session_service.set_code(req.session_id, html_code=new_html, qa_report={"uat_refined": True})
         yield f"data: {json.dumps({'type': 'complete', 'session': updated_session.model_dump()}, ensure_ascii=False)}\n\n"
