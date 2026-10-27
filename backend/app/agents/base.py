@@ -44,19 +44,32 @@ def clean_markdown_code(raw_text: str) -> str:
 def get_gemini_llm(
     model_name: Optional[str] = None,
     temperature: float = 0.7
-) -> ChatGoogleGenerativeAI:
+):
     """
-    Instantiates an authenticated Google Gemini LLM instance via LangChain.
+    Instantiates an LLM instance.
+    If `llm_base_url` is configured (e.g. 9router at http://localhost:20128/v1),
+    routes through ChatOpenAI compatible protocol.
+    Otherwise routes directly to ChatGoogleGenerativeAI.
     Strictly safeguards API keys from exposure.
     """
     settings = get_settings()
-    selected_model = model_name or settings.gemini_model or "gemini-2.5-flash"
-    api_key = settings.gemini_api_key
+    selected_model = model_name or settings.gemini_model or "ag/gemini-3.7-flash-high"
+    api_key = settings.gemini_api_key or "DUMMY_KEY_FOR_TESTING"
 
-    # Initialize ChatGoogleGenerativeAI with secret key
+    if settings.llm_base_url:
+        from langchain_openai import ChatOpenAI
+        return ChatOpenAI(
+            model=selected_model,
+            openai_api_key=api_key,
+            openai_api_base=settings.llm_base_url,
+            temperature=temperature,
+            timeout=120,
+            max_retries=2,
+        )
+
     return ChatGoogleGenerativeAI(
         model=selected_model,
-        google_api_key=api_key or "DUMMY_KEY_FOR_TESTING",
+        google_api_key=api_key,
         temperature=temperature,
         timeout=120,
         max_retries=2,

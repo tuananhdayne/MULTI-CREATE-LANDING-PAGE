@@ -10,7 +10,8 @@ def test_settings_default_values(monkeypatch):
 
     settings = Settings()
     assert settings.gemini_api_key == "test_gemini_key_123456789"
-    assert settings.gemini_model in ["gemini-2.5-flash", "gemini-3.7-flash"]
+    assert "3.7-flash" in settings.gemini_model or "2.5-flash" in settings.gemini_model
+    assert settings.llm_base_url == "http://localhost:20128/v1"
     assert settings.host == "0.0.0.0"
     assert settings.port == 8000
 
