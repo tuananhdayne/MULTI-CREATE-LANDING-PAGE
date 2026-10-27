@@ -1,6 +1,21 @@
 import re
+import asyncio
+import concurrent.futures
 from typing import Dict, Any, Tuple, List
 from app.models.state import AgentState
+from app.services.chrome_inspector import ChromeInspector
+
+def run_sync(coro):
+    """Executes an async coroutine synchronously, safe inside running event loops."""
+    try:
+        loop = asyncio.get_event_loop()
+        if loop.is_running():
+            with concurrent.futures.ThreadPoolExecutor() as pool:
+                return pool.submit(asyncio.run, coro).result()
+        else:
+            return loop.run_until_complete(coro)
+    except RuntimeError:
+        return asyncio.run(coro)
 
 
 def validate_html_structure(code: str) -> Tuple[bool, List[str]]:
@@ -44,35 +59,23 @@ def validate_html_structure(code: str) -> Tuple[bool, List[str]]:
 def qa_node(state: AgentState) -> Dict[str, Any]:
     """
     Visual QA Inspector node in LangGraph.
-    Validates the generated HTML code and decides whether it passes or needs revision.
+    Validates HTML syntax and leverages Chrome DevTools MCP to audit
+    real-time runtime console errors and mobile responsiveness.
     """
     code = state.get("code", "")
     iteration = state.get("iteration", 0) + 1
 
+    # Stage 1: Static HTML Syntax Validation
     is_valid, errors = validate_html_structure(code)
 
     current_messages = list(state.get("messages", []))
 
-    if is_valid:
-        feedback = "Kiểm tra chất lượng thành công: Cấu trúc HTML5 chuẩn, Tailwind CSS CDN đầy đủ, semantic markup hợp lệ."
-        current_messages.append({
-            "agent": "qa",
-            "status": "completed",
-            "message": feedback,
-            "passed": True
-        })
-        return {
-            "qa_passed": True,
-            "qa_feedback": feedback,
-            "iteration": iteration,
-            "messages": current_messages
-        }
-    else:
-        feedback = "Phát hiện lỗi cần khắc phục: " + "; ".join(errors)
+    if not is_valid:
+        feedback = "Phát hiện lỗi cú pháp cần khắc phục: " + "; ".join(errors)
         current_messages.append({
             "agent": "qa",
             "status": "warning" if iteration < 2 else "error",
-            "message": f"QA phát hiện vấn đề (lần {iteration}): {feedback}",
+            "message": f"QA phát hiện vấn đề cú pháp (lần {iteration}): {feedback}",
             "passed": False,
             "errors": errors
         })
@@ -80,7 +83,58 @@ def qa_node(state: AgentState) -> Dict[str, Any]:
             "qa_passed": False,
             "qa_feedback": feedback,
             "iteration": iteration,
-            "messages": current_messages
+            "messages": current_messages,
+            "devtools_audit": {
+                "runtime_tested": False,
+                "reason": "Static validation failed before DevTools launch"
+            }
         }
+
+    # Stage 2: Chrome DevTools MCP Runtime Inspector
+    inspector = ChromeInspector()
+    devtools_audit = run_sync(inspector.inspect_html(code))
+
+    has_runtime_errors = devtools_audit.get("console_errors_count", 0) > 0
+    has_overflow = devtools_audit.get("has_overflow", False)
+
+    if has_runtime_errors or has_overflow:
+        runtime_issues = []
+        if has_runtime_errors:
+            runtime_issues.append(f"Lỗi JavaScript Console: {'; '.join(devtools_audit['console_errors'][:3])}")
+        if has_overflow:
+            runtime_issues.append("Phát hiện phần tử bị tràn viền (overflow) trên màn hình di động 375px.")
+
+        feedback = "Chrome DevTools phát hiện vấn đề runtime: " + " | ".join(runtime_issues)
+        current_messages.append({
+            "agent": "qa",
+            "status": "warning" if iteration < 2 else "error",
+            "message": f"DevTools MCP phát hiện lỗi runtime (lần {iteration}): {feedback}",
+            "passed": False,
+            "devtools_audit": devtools_audit
+        })
+        return {
+            "qa_passed": False,
+            "qa_feedback": feedback,
+            "iteration": iteration,
+            "messages": current_messages,
+            "devtools_audit": devtools_audit
+        }
+
+    # All checks passed
+    feedback = "Kiểm tra chất lượng thành công: Cấu trúc HTML5 chuẩn, Tailwind CSS CDN đầy đủ, Chrome DevTools 0 lỗi console & giao diện di động hoàn hảo."
+    current_messages.append({
+        "agent": "qa",
+        "status": "completed",
+        "message": feedback,
+        "passed": True,
+        "devtools_audit": devtools_audit
+    })
+    return {
+        "qa_passed": True,
+        "qa_feedback": feedback,
+        "iteration": iteration,
+        "messages": current_messages,
+        "devtools_audit": devtools_audit
+    }
 
 visual_qa_node = qa_node
