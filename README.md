@@ -1,25 +1,27 @@
 # 🚀 LandingCraft: Multi-Agent Landing Page Builder
 
-Hệ thống Full-stack phối hợp **5 Agent chuyên sâu** (sử dụng Google Gemini / 9router) để tự động nghiên cứu, viết nội dung, thiết kế giao diện và lập trình trang **Landing Page HTML5 + Tailwind CSS** hoàn chỉnh, hỗ trợ xem trước thời gian thực (**Live Preview**) và chỉnh sửa từng phần tử theo kiểu **Chrome DevTools Click-to-Inspect**.
+Hệ thống Full-stack phối hợp **8 AI Agent chuyên sâu** theo mô hình **Human-in-the-Loop 3 Giai đoạn (Milestone Workflow)**, ứng dụng Google Gemini (qua 9router Local Gateway), tích hợp **UI UX Pro Max**, **Frontend Design Skill**, **Chrome DevTools MCP** và **Playwright** để kiến tạo các trang Landing Page HTML5 + Tailwind CSS độc bản, tối ưu chuyển đổi, xem trước thời gian thực và hỗ trợ chỉnh sửa trực quan từng phần tử với **Click-to-Inspect**.
+
+📖 **Tài liệu Kiến trúc & Triển khai toàn diện:** [docs/PROJECT_ARCHITECTURE.md](docs/PROJECT_ARCHITECTURE.md)
 
 ---
 
 ## 🌟 Tính Năng Nổi Bật
 
-1. **Đội ngũ 5 AI Agents chuyên sâu**:
-   - 🧭 **Product Strategist**: Phân tích đề bài, xây dựng dàn ý cấu trúc tối ưu tỷ lệ chuyển đổi (CRO Blueprint).
-   - ✍️ **Copywriter**: Viết tiêu đề bắt mắt (Headlines), lời kêu gọi hành động (CTAs), lợi ích sản phẩm và FAQs.
-   - 🎨 **UI/UX Designer**: Thiết lập bảng màu Tailwind, Typography Google Fonts, hiệu ứng Glassmorphism & Micro-interactions.
-   - 💻 **Frontend Coder**: Tổng hợp và sinh ra tệp mã HTML5 độc lập nạp Tailwind CSS CDN & Lucide Icons.
-   - 🔍 **Visual QA & DevTools**: Kiểm tra tính toàn vẹn cú pháp HTML và các thẻ đóng (vòng lặp phản biện Critic-fix loop).
-2. **Trải nghiệm Chrome DevTools Click-to-Inspect**:
+1. **Quy trình Hợp tác Agency 3 Giai đoạn (Human-in-the-Loop)**:
+   - 📋 **Giai đoạn 1 (Briefing)**: Khảo sát nghiệp vụ với `BA Analyst Agent` qua 3 câu hỏi cốt lõi có sẵn gợi ý 1-click.
+   - 🎨 **Giai đoạn 2 (Proposal)**: Ký duyệt bản Đề xuất Kiến trúc & Thiết kế do `Proposal Agent` thiết lập trước khi lập trình.
+   - 💻 **Giai đoạn 3 (Build & UAT)**: Hệ sinh thái 5 Agent (Strategist, Copywriter, Designer, Coder, QA) tự động lập trình và nghiệm thu tương tác.
+2. **Đội ngũ 8 AI Agents chuyên trách**:
+   - `BA Analyst`, `Proposal Agent`, `Product Strategist`, `Conversion Copywriter`, `UI/UX Designer`, `Frontend Coder`, `Visual QA` và `Targeted Element Editor`.
+3. **Trải nghiệm Chrome DevTools Click-to-Inspect**:
    - Nhấp trực tiếp vào bất kỳ phần tử nào trên giao diện (nút bấm, tiêu đề, thẻ card) để ra lệnh cho AI sửa chính xác phần đó.
-3. **Quản lý phiên bản & Xem trước đa màn hình**:
-   - Hỗ trợ **Hoàn tác (Undo)** và **Làm lại (Redo)** qua từng lần chỉnh sửa.
-   - Chuyển đổi khung nhìn linh hoạt: **Desktop (100%)**, **Tablet (768px)**, **Mobile (375px)**.
+4. **Quản lý phiên bản & Xem trước đa màn hình**:
+   - Hỗ trợ **Hoàn tác (Undo)** và **Làm lại (Redo)** mượt mà trên bộ nhớ session.
+   - Chuyển đổi khung nhìn linh hoạt: **Desktop (1280px)**, **Tablet (768px)**, **Mobile (375px)**.
    - Xuất bản và tải về tệp `index.html` chạy ngay chỉ với 1 cú click.
-4. **Hỗ trợ 9router Local Gateway**:
-   - Tích hợp sẵn cổng kết nối `http://localhost:20128/v1` của 9router với các model như `ag/gemini-3.7-flash-high` hoặc Google AI Studio trực tiếp.
+5. **Hỗ trợ 9router Local Gateway**:
+   - Tích hợp cổng kết nối `http://localhost:20128/v1` của 9router với các model như `ag/gemini-3.8-flash-high` hoặc Google Gemini API trực tiếp.
    - Tuyệt đối bảo mật API Key, không lưu vết hay để lộ key ra ngoài.
 
 ---
